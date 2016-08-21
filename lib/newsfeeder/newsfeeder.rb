@@ -1,3 +1,9 @@
+require 'mechanize'
+require 'httparty'
+require 'zip'
+require 'redis'
+require 'progress_bar'
+
 module Newsfeeder
   class Newsfeeder
     attr_reader :redis, :http_folder_url, :news_list_name, :temp_local_dir
@@ -26,10 +32,16 @@ module Newsfeeder
       puts "Done reading #{files.size} zip files! #{new_count} new news item"\
         " has been added to '#{news_list_name}' Redis list."\
         " Total news items: #{news_count}."
-      Dir.chdir('..')
+      change_to_app_root
     end
 
     private
+
+    def change_to_app_root
+      Dir.chdir('..')
+      Dir.chdir('..')
+      puts "Changed directory: #{Dir.pwd}"
+    end
 
     def links(folder_url: http_folder_url)
       Mechanize.new.get(folder_url).links
@@ -43,20 +55,24 @@ module Newsfeeder
       links.select { |link| link.text.include?('.zip') }
     end
 
-    def setup_directory(dir_name: temp_local_dir)
-      if Dir.exists?(dir_name)
-        puts "Skipping creating directory #{dir_name}. It already exists."
+    def create_and_change_dir(name:)
+      if Dir.exists?(name)
+        puts "Skipping creating directory #{name}. It already exists."
       else
-        Dir.mkdir(dir_name)
-        puts "Directory #{dir_name} created!"
+        Dir.mkdir(name)
+        puts "Directory #{name} created!"
       end
 
-      Dir.chdir(dir_name)
+      Dir.chdir(name)
       puts "Changed directory: #{Dir.pwd}"
     end
 
+    def setup_directory
+      create_and_change_dir(name: 'tmp_zip')
+      create_and_change_dir(name: temp_local_dir)
+    end
+
     def download_files(number:)
-      bar = ProgressBar.new(number)
       setup_directory
       if number == :all
         remote_files_links = zip_links
@@ -64,6 +80,8 @@ module Newsfeeder
         remote_files_links = zip_links.sample(number)
       end
       puts "Downloading #{remote_files_links.size} remote zip files..."
+
+      bar = ProgressBar.new(remote_files_links.size)
 
       remote_files_links.each do |link|
         file = open(link.text, 'w')
