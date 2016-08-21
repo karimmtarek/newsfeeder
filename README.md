@@ -1,28 +1,30 @@
 # Newsfeeder
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/newsfeeder`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Usage
+__Please note:__
+- Before running the app, Redis should be installed and running.
+- When `Newsfeeder` class is initited, by default all the arguments has defaults unless you chose to overwrite the them, the arguments are `redis` Redis object , `http_folder_url` remote http folder url, `news_list_name` name of the news list in Redis, there default values are as follow:
+  - redis = Redis.new
+  - http_folder_url = 'http://feed.omgili.com/5Rh5AMTrc4Pv/mainstream/posts/'
+  - news_list_name = 'NEWS_XML'
 
-TODO: Delete this and the text above, and describe your gem
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'newsfeeder'
+You only need to run `Newsfeeder::Newsfeeder.new` if you chose to change the defaults, it would look something like:
+```
+  Newsfeeder::Newsfeeder.new(
+    redis: Redis.new(:host => "10.0.1.1", :port => 6380, :db => 15),
+    http_folder_url: 'http://some_other_http_folder_url',
+    news_list_name: 'some_other_list_name'
+  )
 ```
 
-And then execute:
+__Only needs to be done once:__
+- `$ git clone git@github.com:karimmtarek/newsfeeder.git`
+- `$ bin/setup`
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install newsfeeder
-
-## Usage
-
-TODO: Write usage instructions here
+__Thereafter:__
+- `$ bin/console`
+- `$ newsfeeder = Newsfeeder::Newsfeeder.new`
+- `$ newsfeeder.redis_feeder(items: :all)` or `$ newsfeeder.redis_feeder(items: 10)` if you just want limited number of zip files to be downloaded and feed into Redis.
 
 ## Development
 
@@ -33,7 +35,6 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/newsfeeder.
-
 
 ## License
 
