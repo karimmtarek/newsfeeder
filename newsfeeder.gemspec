@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["karim Tarek"]
   spec.email         = ["karimmtarek@gmail.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Newsfeeder aggregates news data and publishes it to Redis.}
+  spec.description   = %q{Newsfeeder downloads zip files from a remote HTTP folder, extract out the xml files, and publish the content of each xml file to a redis list.}
+  spec.homepage      = "https://github.com/karimmtarek/newsfeeder"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'mechanize'
   spec.add_runtime_dependency 'httparty'
-  spec.add_runtime_dependency 'zip'
+  spec.add_runtime_dependency 'rubyzip'
   spec.add_runtime_dependency 'redis'
   spec.add_runtime_dependency 'progress_bar'
 end
