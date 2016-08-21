@@ -1,4 +1,5 @@
 require_relative "newsfeeder/version"
+require_relative "newsfeeder/newsfeeder"
 
 require 'mechanize'
 require 'httparty'
